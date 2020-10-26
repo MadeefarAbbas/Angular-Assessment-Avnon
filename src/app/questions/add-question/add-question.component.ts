@@ -135,7 +135,8 @@ export class AddQuestionComponent implements OnInit {
     } else {
       this.questionService.addNewQuestion(question);
     }
-    this.router.navigateByUrl('/questions');
+    this.router.navigateByUrl('/add-question');
+    this.myForm.reset();
   }
 
   onPreview() {

@@ -3,9 +3,6 @@
     <div class="col-sm-9">
     <h2>Welcome to the Demo Forms Builder</h2>
     </div>
-    <div class="col-sm-3">
-      <button class="btn btn-outline-success" routerLink="/add-question">Add New Question</button>
-    </div>
   </div>
 
   <div class="mt-5" *ngFor="let question of questions">
@@ -32,7 +29,7 @@
         <ul class="list-unstyled">
           <li *ngFor="let option of question.options">
             <label class="radio-container">
-              <input type="radio">
+              <input type="radio" name="question.id">
               <span class="checkmark"></span>
             </label>
             <span class="ml-35" *ngIf="option.option != '__other'">{{option.option | titlecase}}</span>

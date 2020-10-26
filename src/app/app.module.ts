@@ -12,7 +12,6 @@ const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: '/add-question'},
   {path: 'add-question', component: AddQuestionComponent},
   {path: 'edit/:id', component: AddQuestionComponent},
-  {path: 'questions', component: ListQuestionComponent},
   {path: 'preview-questions', component: PreviewQuestionsComponent}
 ];
 
