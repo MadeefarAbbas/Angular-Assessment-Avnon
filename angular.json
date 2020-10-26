@@ -88,9 +88,13 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           }
         },
         "lint": {
@@ -119,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "angular-assessment-madeefar"
+    }
+  },
+  "defaultProject": "angular-assessment-madeefar",
+  "cli": {
+    "analytics": "9bef3639-421e-47cc-bbd0-a54292464ec9"
+  }
 }
