@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Question } from './question.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class QuestionService {
   questions = [];
-  private updatedQuestions: BehaviorSubject<Question[]> = new BehaviorSubject<Question[]>([]);
+  private updatedQuestions: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
 
   constructor() { }
 
@@ -28,7 +27,7 @@ export class QuestionService {
     this.updatedQuestions.next([...this.questions]);
   }
 
-  getQuestion(id): Question {
+  getQuestion(id): any {
     const index = this.questions.findIndex(x => x.id == id);
     const question = this.questions[index];
     return question;

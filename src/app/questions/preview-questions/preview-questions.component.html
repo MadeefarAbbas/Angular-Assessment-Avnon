@@ -11,27 +11,59 @@
   <div class="mt-5" *ngFor="let question of questions">
     <div class="row">
       <div class="col-sm-6">
-        <h6 class="bold">{{question.question}}</h6>
+        <h6 class="bold">{{question.paragraphQuestion.questionTitle}}</h6>
       </div>
     </div>
-    <div class="row mt-3" *ngIf="question.questionType == '1'">
+    <div class="row mt-3">
       <div class="col-sm-12">
         <div >
-          <textarea  rows="10" cols="50" class="form-control" [required]="question.isRequired">
-            {{question.paragraph}}
-          </textarea>
+          {{question.paragraphQuestion.paragraph}} {{question.paragraphQuestion.isRequired ? '- Comment required' : ''}}
         </div>
       </div>
     </div>
-    <div class="row mt-3" *ngIf="question.questionType == '2' || question.questionType == '3'">
+    <hr />
+
+    <div class="row">
+      <div class="col-sm-6">
+        <h6 class="bold">{{question.radioButtonQuestion.questionTitle}}</h6>
+      </div>
+    </div>
+
+    <div class="row mt-3">
       <div class="col-sm-12">
         <ul>
-          <div *ngFor="let option of question.options">
-            <li *ngIf="(option.option != '__other' && option.valid) || (option.option == '__other' && option.valid)">
-              <span class="ml-35" *ngIf="option.option != '__other' && option.valid">{{option.option | titlecase}} </span>
-              <span class="ml-35" *ngIf="option.option == '__other' && option.valid">{{'other' | titlecase}}</span>
+          <div *ngFor="let option of question.radioButtonQuestion.options">
+            <li *ngIf="option.option && option.valid">
+              <span class="ml-35" >{{option.option | titlecase}} {{question.radioButtonQuestion.isRequired ? '- Comment required' : ''}}</span>
             </li>
           </div>
+
+          <li *ngIf="question.radioButtonQuestion.other">
+            <span class="ml-35">{{'other' | titlecase}}</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <hr />
+
+    <div class="row">
+      <div class="col-sm-6">
+        <h6 class="bold">{{question.checkboxQuestion.questionTitle}}</h6>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-sm-12">
+        <ul>
+          <div *ngFor="let option of question.checkboxQuestion.options">
+            <li  *ngIf="option.valid">
+              <span class="ml-35">{{option.option | titlecase}} {{question.checkboxQuestion.isRequired ? '- Comment required' : ''}}</span>
+            </li>
+          </div>
+
+            <li *ngIf="question.checkboxQuestion.other">
+              <span class="ml-35">{{'other' | titlecase}}</span>
+            </li>
         </ul>
       </div>
     </div>

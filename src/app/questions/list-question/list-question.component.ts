@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { QuestionService } from '../question.service';
-import { Question } from '../question.model';
 import { Router } from '@angular/router';
 
 @Component({
@@ -12,7 +11,7 @@ import { Router } from '@angular/router';
 export class ListQuestionComponent implements OnInit, OnDestroy {
 
   questionSubs: Subscription;
-  questions: Question[] = [];
+  questions: any[] = [];
 
   constructor(private questionService: QuestionService,private router: Router) { }
 

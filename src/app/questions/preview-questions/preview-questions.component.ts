@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Question } from '../question.model';
 import { QuestionService } from '../question.service';
 import { Router } from '@angular/router';
 
@@ -13,7 +12,7 @@ export class PreviewQuestionsComponent implements OnInit, OnDestroy {
 
 
   questionSubs: Subscription;
-  questions: Question[] = [];
+  questions: any[] = [];
 
   constructor(private questionService: QuestionService,private router: Router) { }
 
