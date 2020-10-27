@@ -71,7 +71,6 @@ export class AddQuestionComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log(this.myForm)
     this.route.params.subscribe((params: any) => {
       if(params.id) {
         this.id = params.id;
@@ -82,38 +81,6 @@ export class AddQuestionComponent implements OnInit {
       }
     });
 
-
-    if(this.isEdit) {
-      // const editOptionsLen = this.editQuestion.options
-      // .filter(val => {
-      //   if(val.option == 'other') {
-      //     return this.onOtherOption();
-      //   }
-      //   return val;
-      // }).length;
-      // this.myForm = this.fb.group({
-      //   question: ['',Validators.required],
-      //   questionType: ['',Validators.required],
-      //   paragraph: [''],
-      //   options: this.fb.array(this.createEmpFormGroup(editOptionsLen)),
-      //   isRequired: [false]
-      // });
-      // this.selectedValue = this.editQuestion.questionType;
-      // this.myForm.patchValue({
-      //   question: this.editQuestion.question,
-      //   questionType: this.editQuestion.questionType,
-      //   paragraph: this.editQuestion.paragraph,
-      //   options: this.editQuestion.options.filter(val => {
-      //     if(val.option == 'other') {
-      //       return this.onOtherOption();
-      //     }
-      //     return val;
-      //   }),
-      //   isRequired: this.editQuestion.isRequired
-      // });
-
-      // this.myForm.setControl('options', this.fb.array(this.editQuestion.options));
-    }
   }
 
   ngAfterViewInit() {
@@ -122,7 +89,6 @@ export class AddQuestionComponent implements OnInit {
 
 
   onRadioButtonChange(val) {
-    console.log(val)
     this.radiobuttonOptions.value.forEach((data, index)=>{
       if((val.option == this.radiobuttonOptions.value[index].option) && (val.valid == this.radiobuttonOptions.value[index].valid)){
         const myForm = (<FormArray>(<FormGroup>this.myForm.get('radioButtonQuestion')).get('options')).at(index);
@@ -140,7 +106,6 @@ export class AddQuestionComponent implements OnInit {
           valid: undefined
         })
 
-        console.log('not')
       }
     })
   }
@@ -171,7 +136,6 @@ export class AddQuestionComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.myForm)
     this.isValidFormSubmitted = false;
 		if (this.myForm.invalid) {
 			return;
