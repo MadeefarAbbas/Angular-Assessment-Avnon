@@ -15,7 +15,7 @@ export class AddQuestionComponent implements OnInit {
   myForm: FormGroup;
   questionTypes = [];
   selectedValue = '1';
-  otherCheckBoxChecked = false;
+  otherChecked = false;
   isValidFormSubmitted = null;
   isEdit = false;
   editQuestion: any;
@@ -23,50 +23,12 @@ export class AddQuestionComponent implements OnInit {
 
   constructor(private cdRef:ChangeDetectorRef,private fb: FormBuilder, private questionService: QuestionService,private router: Router,private route: ActivatedRoute) {
     this.myForm = this.fb.group({
-      paragraphQuestion: this.fb.group({
-        questionTitle: ['',[Validators.required]],
-        paragraph: ['',[Validators.required]],
-        isRequired: [false]
-      }),
-      radioButtonQuestion: this.fb.group({
-        questionTitle: ['',[Validators.required]],
-        options: this.fb.array([
-          this.fb.group({
-            option: ['',Validators.required],
-            valid: [undefined]
-          }),
-          this.fb.group({
-            option: ['',Validators.required],
-            valid: [undefined]
-          }),
-
-          this.fb.group({
-            option: ['',Validators.required],
-            valid: [undefined]
-          })
-        ]),
-        other: false,
-        isRequired: [false]
-      }),
-      checkboxQuestion: this.fb.group({
-        questionTitle: ['',[Validators.required]],
-        options: this.fb.array([
-          this.fb.group({
-            option: ['',Validators.required],
-            valid: [false]
-          }),
-          this.fb.group({
-            option: ['',Validators.required],
-            valid: [false]
-          }),
-          this.fb.group({
-            option: ['',Validators.required],
-            valid: [false]
-          })
-        ]),
-        other: false,
-        isRequired: [false]
-      })
+      question: ['',Validators.required],
+      questionType: ['',Validators.required],
+      paragraph: ['', Validators.required],
+      options: this.fb.array([]),
+      other: [false],
+      isRequired: [false]
     });
   }
 
@@ -81,33 +43,11 @@ export class AddQuestionComponent implements OnInit {
       }
     });
 
+    this.questionTypes = this.getQuestionTypes();
   }
 
   ngAfterViewInit() {
     this.cdRef.detectChanges();
-  }
-
-
-  onRadioButtonChange(val) {
-    this.radiobuttonOptions.value.forEach((data, index)=>{
-      if((val.option == this.radiobuttonOptions.value[index].option) && (val.valid == this.radiobuttonOptions.value[index].valid)){
-        const myForm = (<FormArray>(<FormGroup>this.myForm.get('radioButtonQuestion')).get('options')).at(index);
-        if(val.option) {
-          myForm.patchValue({
-            option: this.radiobuttonOptions.value[index].option,
-            valid: this.radiobuttonOptions.value[index].option
-          })
-        }
-
-      } else {
-        const myForm = (<FormArray>(<FormGroup>this.myForm.get('radioButtonQuestion')).get('options')).at(index);
-        myForm.patchValue({
-          option: this.radiobuttonOptions.value[index].option,
-          valid: undefined
-        })
-
-      }
-    })
   }
 
 
@@ -126,16 +66,50 @@ export class AddQuestionComponent implements OnInit {
 
   }
 
-
-  get checkboxOptions() {
-    return (<FormArray>(<FormGroup>this.myForm.get('checkboxQuestion')).get('options'));
+  get options() {
+    return this.myForm.get("options") as FormArray;
   }
 
-  get radiobuttonOptions() {
-    return (<FormArray>(<FormGroup>this.myForm.get('radioButtonQuestion')).get('options'));
+  get question() {
+    return this.myForm.get('question');
+  }
+
+  get paragraph() {
+    return this.myForm.get('paragraph');
+  }
+
+  get qType() {
+    return this.myForm.get('questionType');
+  }
+
+  updatedOptions(): FormArray {
+    return this.myForm.get("options") as FormArray;
+  }
+
+  onRadioButtonChange(val) {
+    this.options.value.forEach((data, index)=>{
+      if((val.option == this.options.value[index].option) && (val.valid == this.options.value[index].valid)){
+        const myForm = (<FormArray>(<FormGroup>this.myForm).get('options')).at(index);
+        if(val.option) {
+          myForm.patchValue({
+            option: this.options.value[index].option,
+            valid: this.options.value[index].option
+          })
+        }
+
+      } else {
+        const myForm = (<FormArray>(<FormGroup>this.myForm).get('options')).at(index);
+        myForm.patchValue({
+          option: this.options.value[index].option,
+          valid: undefined
+        })
+
+      }
+    })
   }
 
   onSubmit() {
+    console.log(this.myForm)
     this.isValidFormSubmitted = false;
 		if (this.myForm.invalid) {
 			return;
@@ -147,7 +121,6 @@ export class AddQuestionComponent implements OnInit {
     } else {
       this.questionService.addNewQuestion(question);
     }
-    this.router.navigateByUrl('/add-question');
     this.myForm.reset();
   }
 
@@ -155,22 +128,52 @@ export class AddQuestionComponent implements OnInit {
     this.router.navigate(['preview-questions']);
   }
 
-  addCheckBoxOption() {
-    this.checkboxOptions.push(
+
+  getQuestionTypes() {
+    return [
+      { id: '1', name: 'Paragraph' },
+      { id: '2', name: 'Radio Button' },
+      { id: '3', name: 'Checkbox' }
+    ];
+  }
+
+  onChangeQuestionType(value) {
+    if(value == 1) {
+      const updatedOptionsArr = this.updatedOptions();
+      this.myForm.controls['paragraph'].setValue(null);
+      this.clearFormArray(updatedOptionsArr);
+    }
+    if(value == 2) {
+      const updatedOptionsArr = this.updatedOptions();
+      this.clearFormArray(updatedOptionsArr);
+      this.myForm.controls['paragraph'].setValue(' ');
+      this.createEmpFormGroup(3).map(val => {
+        this.updatedOptions().push(val);
+      });
+    }
+    if(value == 3) {
+      const updatedOptionsArr = this.updatedOptions();
+      this.clearFormArray(updatedOptionsArr);
+      this.myForm.controls['paragraph'].setValue(' ');
+      this.createEmpFormGroup(3).map(val => {
+        this.updatedOptions().push(val);
+      })
+    }
+  }
+
+  clearFormArray (formArray: FormArray) {
+    while (formArray.length !== 0) {
+      formArray.removeAt(0)
+    }
+  }
+
+  addOption() {
+    this.options.push(
       this.fb.group({
         option: ["",Validators.required],
         valid: [false]
       })
     );
-  }
-
-  addRadioButtonOption() {
-    this.radiobuttonOptions.push(
-      this.fb.group({
-        option: ["",Validators.required],
-        valid: [undefined]
-      })
-    )
   }
 
 }

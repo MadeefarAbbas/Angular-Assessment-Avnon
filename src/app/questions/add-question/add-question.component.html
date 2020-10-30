@@ -1,163 +1,93 @@
 <div class="container mt-5">
-  <div class="row mt-5 mb-5">
-    <div class="col-sm-9">
-    <h2>Welcome to the Demo Forms Builder</h2>
-    </div>
-  </div>
-
+  <h3>Add A Question</h3>
 <form [formGroup]="myForm" (ngSubmit)="onSubmit()" *ngIf="myForm">
-  <div class="form-row" formGroupName="paragraphQuestion">
-    <div class="form-group col-md-12">
-      <label><b>Add A Question</b></label>
-      <input type="text" class="form-control"
-      [ngClass]="{'is-invalid': myForm.hasError('required', 'paragraphQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !myForm.hasError('required', 'paragraphQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted}"
-       id="questionTitle" formControlName="questionTitle">
-      <small id="passwordHelp" class="text-danger" *ngIf="myForm.hasError('required', 'paragraphQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted">
+  <div class="form-row">
+    <div class="form-group col-md-9">
+      <input type="text" class="form-control" [ngClass]="{'is-invalid': question.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !question.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted}"
+       id="question" formControlName="question">
+      <small id="passwordHelp" class="text-danger" *ngIf="question.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted">
         Question is required.
       </small>
     </div>
 
+    <div class="form-group col-md-3">
+      <select
+       [(ngModel)]="selectedValue"
+       id="questionType" class="form-control"
+       formControlName="questionType"
+       (change)="onChangeQuestionType($event.target.value)"
+       [ngClass]="{'is-invalid': qType.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !qType.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted}"
+       >
+        <option *ngFor="let qType of questionTypes; let i = index" [value]="questionTypes[i].id">
+          {{questionTypes[i].name}}
+        </option>
+      </select>
+      <small id="passwordHelp" class="text-danger" *ngIf="qType.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted">
+        Question Type is required.
+      </small>
+    </div>
+  </div>
 
+
+  <div formArrayName="options" *ngIf="qType.value == 2 || qType.value == 3">
+    <div *ngFor="let option of options.controls; let i=index">
+
+      <div [formGroupName]="i">
+        <div class="form-row">
+          <div class="form-group col-md-9">
+            <input
+             type="text"
+             class="form-control"
+             formControlName="option"
+             placeholder="Add Answer option"
+             [ngClass]="{'is-invalid': options.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !options.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted}"
+             >
+             <small id="passwordHelp" class="text-danger" *ngIf="options.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted">
+                Answer option is required.
+            </small>
+          </div>
+          <div class="form-group col-md-3" *ngIf="qType.value == 2">
+            <label class="radio-container">
+              <input type="radio" formControlName="valid" name="valid" [value]="options.controls[i].get('option').value" [id]="i" (change)="onRadioButtonChange(options.controls[i].value)">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+          <div class="form-group col-md-3" *ngIf="qType.value == 3">
+            <label class="inline-input-container">
+              <input type="checkbox" formControlName="valid" [checked]="options.controls[i].get('valid').value">
+              <span class="checkmark"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button type="button" class="btn btn-sm btn-outline-primary" (click)="addOption()" *ngIf="qType.value == 2 || qType.value == 3">Add Option</button>
+  <div class="form-row mt-3" *ngIf="qType.value == 1">
     <div class="form-group col-md-12">
       <textarea
-      [ngClass]="{'is-invalid': myForm.hasError('required', 'paragraphQuestion.paragraph') && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !myForm.hasError('required', 'paragraphQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted}"
+      [ngClass]="{'is-invalid': paragraph.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !paragraph.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted}"
       rows="10" cols="100" class="form-control" formControlName="paragraph">
       </textarea>
-      <small id="passwordHelp" class="text-danger" *ngIf="myForm.hasError('required', 'paragraphQuestion.paragraph') && isValidFormSubmitted != null && !isValidFormSubmitted">
+      <small id="passwordHelp" class="text-danger" *ngIf="paragraph.errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted">
         Paragraph is required.
       </small>
     </div>
-
-    <label class="form-input-container">
-      <input type="checkbox" formControlName="isRequired" > This question is required
-      <span class="checkmark"></span>
-    </label>
-
   </div>
-  <br />
-  <hr />
-  <br />
-  <div class="form-row" formGroupName="radioButtonQuestion">
-    <div class="form-group col-md-10">
-      <label><b>Add A Question</b></label>
-      <input type="text" class="form-control"
-      [ngClass]="{'is-invalid': myForm.hasError('required', 'radioButtonQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !myForm.hasError('required', 'radioButtonQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted}"
-       id="questionTitle" formControlName="questionTitle">
-      <small id="passwordHelp" class="text-danger" *ngIf="myForm.hasError('required', 'radioButtonQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted">
-        Question is required.
-      </small>
-    </div>
 
-
-    <div class="form-group col-md-12">
-      <div formArrayName="options">
-
-        <div *ngFor="let option of radiobuttonOptions.controls; let i=index">
-          <div [formGroupName]="i">
-            <div class="form-row">
-              <div class="form-group col-md-9">
-                <input
-                 type="text"
-                 class="form-control"
-                 formControlName="option"
-                 placeholder="Add Answer option"
-                 [ngClass]="{'is-invalid': radiobuttonOptions.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !radiobuttonOptions.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted}"
-                 >
-
-                 <small id="passwordHelp" class="text-danger" *ngIf="radiobuttonOptions.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted">
-                    Answer option is required.
-                </small>
-              </div>
-
-              <div class="form-group col-md-3">
-                <label class="radio-container">
-
-                  <input type="radio" formControlName="valid" name="valid" [value]="radiobuttonOptions.controls[i].get('option').value" [id]="i" (change)="onRadioButtonChange(radiobuttonOptions.controls[i].value)">
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <button type="button" class="btn btn-sm btn-outline-primary" (click)="addRadioButtonOption()">Add Option</button>
-
-    <div class="form-group col-md-12 mt-4" >
+  <div class="form-row mt-3" >
+    <div class="form-group col-md-12" *ngIf="qType.value == 2 || qType.value == 3">
       <label class="form-input-container">
         <input type="checkbox" formControlName="other">Include ‘Other’ option
         <span class="checkmark"></span>
       </label>
     </div>
-
     <div class="form-group col-md-12">
       <label class="form-input-container">
         <input type="checkbox" formControlName="isRequired" > This question is required
         <span class="checkmark"></span>
       </label>
     </div>
-
-  </div>
-  <br />
-  <hr />
-  <br />
-  <div class="form-row" formGroupName="checkboxQuestion">
-    <div class="form-group col-md-10">
-      <label><b>Add A Question</b></label>
-      <input type="text" class="form-control"
-      [ngClass]="{'is-invalid': myForm.hasError('required', 'checkboxQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !myForm.hasError('required', 'checkboxQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted}"
-       id="questionTitle" formControlName="questionTitle">
-      <small id="passwordHelp" class="text-danger" *ngIf="myForm.hasError('required', 'checkboxQuestion.questionTitle') && isValidFormSubmitted != null && !isValidFormSubmitted">
-        Question is required.
-      </small>
-    </div>
-
-    <div class="form-group col-md-12">
-      <div formArrayName="options">
-
-        <div *ngFor="let option of checkboxOptions.controls; let i=index">
-          <div [formGroupName]="i">
-            <div class="form-row">
-              <div class="form-group col-md-9">
-                <input
-                 type="text"
-                 class="form-control"
-                 formControlName="option"
-                 placeholder="Add Answer option"
-                 [ngClass]="{'is-invalid': checkboxOptions.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted,'is-valid': !checkboxOptions.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted}"
-                 >
-
-                 <small id="passwordHelp" class="text-danger" *ngIf="checkboxOptions.controls[i].get('option').errors?.required && isValidFormSubmitted != null && !isValidFormSubmitted">
-                    Answer option is required.
-                </small>
-              </div>
-              <div class="form-group col-md-3">
-                <label class="inline-input-container">
-                  <input type="checkbox" formControlName="valid" [checked]="checkboxOptions.controls[i].get('valid').value">
-                  <span class="checkmark"></span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <button type="button" class="btn btn-sm btn-outline-primary" (click)="addCheckBoxOption()">Add Option</button>
-
-    <div class="form-group col-md-12 mt-4" >
-      <label class="form-input-container">
-        <input type="checkbox" formControlName="other">Include ‘Other’ option
-        <span class="checkmark"></span>
-      </label>
-    </div>
-
-    <div class="form-group col-md-12">
-      <label class="form-input-container">
-        <input type="checkbox" formControlName="isRequired" > This question is required
-        <span class="checkmark"></span>
-      </label>
-    </div>
-
   </div>
 
   <button type="submit" class="btn btn-outline-primary">Submit</button>
